@@ -13,29 +13,6 @@
 # limitations under the License.
 # ------------------------------------------------------------------------------
 
-import unittest
 
-from sawtooth_processor_test.mock_validator import MockValidator
-
-
-class TransactionProcessorTestCase(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        url = 'eth0:40000'
-        url = '127.0.0.1:40000'
-
-        cls.validator = MockValidator()
-
-        cls.validator.listen(url)
-
-        if not cls.validator.register_processor():
-            raise Exception('Failed to register processor')
-
-        cls.factory = None
-
-    @classmethod
-    def tearDownClass(cls):
-        try:
-            cls.validator.close()
-        except AttributeError:
-            pass
+class SupplyChainException(Exception):
+    pass
