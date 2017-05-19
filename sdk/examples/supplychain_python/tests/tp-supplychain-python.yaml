@@ -32,10 +32,11 @@ services:
       - $SAWTOOTH_CORE:/project/sawtooth-core
     expose:
       - 40000
-    command: nose2-3 --log-capture -v
+    command: nose2-3 --log-capture --log-level=DEBUG -v
         -c /project/sawtooth-core/sdk/examples/supplychain_python/nose2.cfg
         -v
-        -s /project/sawtooth-core/sdk/examples/supplychain_python/tests test_tp_supplychain.TestSupplyChain.test_agent_create
+        -s /project/sawtooth-core/sdk/examples/supplychain_python/tests test_tp_supplychain.TestSupplyChain.test_record_accept_application
+        test_tp_supplychain.TestSupplyChain.test_record_reject_application
     stop_signal: SIGKILL
     environment:
       PYTHONPATH: "/project/sawtooth-core/sdk/python:\

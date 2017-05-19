@@ -58,7 +58,7 @@ def main(args=sys.argv[1:]):  # pylint: disable=dangerous-default-value
                 log_dir=log_dir,
                 name="supplychain-" + str(processor.zmq_id)[2:-1])
 
-        # init_console_logging(verbose_level=opts.verbose)
+        init_console_logging(verbose_level=opts.verbose)
 
         processor.add_handler(SupplychainHandler())
 

@@ -16,6 +16,7 @@
 import logging
 import json
 import time
+import unittest
 
 from sawtooth_sdk.protobuf.validator_pb2 import Message
 
@@ -26,6 +27,7 @@ from sawtooth_supplychain.supplychain_message_factory \
     import SupplychainMessageFactory
 import sawtooth_supplychain.addressing as addressing
 
+from sawtooth_sdk.client.log import init_console_logging
 
 LOGGER = logging.getLogger(__name__)
 
@@ -39,6 +41,7 @@ class TestSupplyChain(TransactionProcessorTestCase):
             Message.TP_STATE_SET_REQUEST,
             compare_set_request)
         cls.factory = SupplychainMessageFactory()
+        init_console_logging(True)
 
     def expect_agent_value_update(self, agent_addr, field, record_addr, value,
                                   exists=False):
@@ -370,6 +373,7 @@ class TestSupplyChain(TransactionProcessorTestCase):
                 },
             }))
 
+    @unittest.skip("Test")
     def test_agent_create(self):
         """
         Test if the supplychain processor can create an agent.
@@ -407,6 +411,7 @@ class TestSupplyChain(TransactionProcessorTestCase):
         validator.respond(factory.create_set_response(agent_addr), received)
 
         validator.expect(factory.create_tp_response("OK"))
+
 
 
 def compare_set_request(req1, req2):
