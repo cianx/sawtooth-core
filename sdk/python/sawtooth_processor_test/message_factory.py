@@ -54,7 +54,10 @@ class MessageFactory(object):
         self.encoding = encoding
         self.family_name = family_name
         self.family_version = family_version
-        self.namespace = namespace
+        if isinstance(namespace, (list)):
+            self.namespaces = namespace
+        else:
+            self.namespaces = [namespace]
 
         if private is None:
             private = _private()
@@ -64,6 +67,10 @@ class MessageFactory(object):
 
         self._private = private
         self._public = public
+
+    @property
+    def namespace(self):
+        return self.namespaces[0]
 
     def sha512(self, content):
         return hashlib.sha512(content).hexdigest()
@@ -79,7 +86,7 @@ class MessageFactory(object):
             family=self.family_name,
             version=self.family_version,
             encoding=self.encoding,
-            namespaces=[self.namespace]
+            namespaces=self.namespaces
         )
 
     def create_tp_response(self, status):
