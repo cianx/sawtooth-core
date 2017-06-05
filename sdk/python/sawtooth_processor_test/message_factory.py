@@ -40,9 +40,11 @@ from sawtooth_sdk.protobuf.state_context_pb2 import Entry
 class InvalidMerkleAddressException(Exception):
     pass
 
-def is_valid_merkle_address(v):
-    return all(c in string.hexdigits.lower() for c in v) and \
-        len(v) == 70
+
+def is_valid_merkle_address(address):
+    return all(c in string.hexdigits.lower() for c in address) and \
+        len(address) == 70
+
 
 def _private():
     return signing.generate_privkey()
@@ -208,8 +210,8 @@ class MessageFactory(object):
 
         # GetResponse object has a list of Entry objects
 
-        self._validate_addresses([address
-            for address, _ in address_data_map.items()])
+        self._validate_addresses(
+            [address for address, _ in address_data_map.items()])
 
         entries = [
             Entry(address=address, data=data)
@@ -222,8 +224,8 @@ class MessageFactory(object):
         )
 
     def create_set_request(self, address_data_map):
-        self._validate_addresses([address
-            for address, _ in address_data_map.items()])
+        self._validate_addresses(
+            [address for address, _ in address_data_map.items()])
 
         entries = [
             Entry(address=address, data=data)
