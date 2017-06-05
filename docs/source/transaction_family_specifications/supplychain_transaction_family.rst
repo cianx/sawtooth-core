@@ -77,32 +77,31 @@ The SCTP uses the 3 namespaces, to store the corresponding objects:
     - supplychain.record
 
 The strings are converted to a Merkle prefix by taking the first 6 characters
-of the hex encoded sha512 hash of the string.
+of the hex encoded sha256 hash of the string.
 
-Agent addresses are generated sha512(agent_pub_key), prepended with the
+Agent addresses are generated sha256(agent_pub_key), prepended with the
 supplychain.agent namespace.
 
 .. code-block:: python
 
-    address = hashlib.sha512(public_key.encode()).hexdigest()
+    address = hashlib.sha256(public_key.encode()).hexdigest()
 
 
-Application addresses are generated as the concatenation of the hash(sha256)
-applicant agent public key and the hash(sha256) record_identifier. sha256 is
-used here to so the top half of the address can identify the Agent and the
-bottom half can identify the Record.
+Application are stored using the Record address and the supplychain.application
+namespace. This stores all application for a record at the same address.
+The correct Application must be searched for useing the public_key of the
+applicant, the Application type, and the Application status.
 
 .. code-block:: python
 
-    address_addr = namespace + sha256(agent_pub_key)).hexdigest()
-         + sha256(record_identifier)).hexdigest()
+    address_addr = sha256(record_identifier)).hexdigest()
 
-Record addresses are generated sha512 of the records natural key., prepended
+Record addresses are generated sha256 of the records natural key., prepended
 with the supplychain.record namespace.
 
 .. code-block:: python
 
-    address = hashlib.sha512(record_identifier.encode()).hexdigest()
+    address = hashlib.sha256(record_identifier.encode()).hexdigest()
 
 
 Transactions
