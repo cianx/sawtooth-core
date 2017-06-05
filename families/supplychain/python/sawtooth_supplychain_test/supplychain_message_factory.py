@@ -194,8 +194,7 @@ class SupplychainMessageFactory(object):
         record_addr = Addressing.record_address(record_id)
         agent_pub_key = self.public_key
         agent_addr = Addressing.agent_address(agent_pub_key)
-        application_addr = Addressing.application_address(
-            applicant_id, record_id)
+        application_addr = Addressing.application_address(record_id)
         inputs = [agent_addr, application_addr, record_addr]
         outputs = [application_addr]
 
@@ -211,8 +210,7 @@ class SupplychainMessageFactory(object):
         record_addr = Addressing.record_address(record_id)
         agent_pub_key = self.public_key
         agent_addr = Addressing.agent_address(agent_pub_key)
-        application_addr = Addressing.application_address(
-            applicant_id, record_id)
+        application_addr = Addressing.application_address(record_id)
         inputs = [agent_addr, application_addr, record_addr]
         outputs = [application_addr]
 

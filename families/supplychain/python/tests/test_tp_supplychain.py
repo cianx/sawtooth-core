@@ -125,8 +125,7 @@ class TestSupplyChain(TransactionProcessorTestCase):
             record_addr = Addressing.record_address(record_id)
             agent_pub_key = factory.public_key
             agent_addr = Addressing.agent_address(agent_pub_key)
-            application_addr = Addressing.application_address(
-                agent_pub_key, "serial number")
+            application_addr = Addressing.application_address(record_id)
             timestamp = int(time.time())
             terms = "Please take this."
 
@@ -179,8 +178,7 @@ class TestSupplyChain(TransactionProcessorTestCase):
             record_id = "serial number"
             record_addr = Addressing.record_address(record_id)
             agent_pub_key = factory.public_key
-            application_addr = Addressing.application_address(
-                applicant_id, record_id)
+            application_addr = Addressing.application_address(record_id)
             timestamp = int(time.time())
 
             # 1. -> Send a set transaction
@@ -230,8 +228,7 @@ class TestSupplyChain(TransactionProcessorTestCase):
             record_id = "serial number"
             record_addr = Addressing.record_address(record_id)
             agent_pub_key = factory.public_key
-            application_addr = Addressing.application_address(
-                applicant_id, record_id)
+            application_addr = Addressing.application_address(record_id)
 
             # 1. -> Send a set transaction
             #    <- Expect a state get request
@@ -272,8 +269,7 @@ class TestSupplyChain(TransactionProcessorTestCase):
 
             record_id = "serial number"
             agent_pub_key = factory.public_key
-            application_addr = Addressing.application_address(
-                agent_pub_key, record_id)
+            application_addr = Addressing.application_address(record_id)
 
             # 1. -> Send a set transaction
             #    <- Expect a state get request

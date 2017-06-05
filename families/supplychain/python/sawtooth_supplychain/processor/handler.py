@@ -193,7 +193,7 @@ class SupplyChainHandler(object):
         agent_addr = Addressing.agent_address(originator)
         record_addr = Addressing.record_address(txn_data.record_identifier)
         application_addr = Addressing.application_address(
-            originator, txn_data.record_identifier)
+            txn_data.record_identifier)
         state_items = self._get(state,
                                 [agent_addr, application_addr, record_addr])
 
@@ -237,7 +237,6 @@ class SupplyChainHandler(object):
 
         record_addr = Addressing.record_address(txn_data.record_identifier)
         application_addr = Addressing.application_address(
-            txn_data.applicant,
             txn_data.record_identifier)
 
         state_items = self._get(state, [application_addr, record_addr])
@@ -293,7 +292,6 @@ class SupplyChainHandler(object):
         txn_data.ParseFromString(data)
 
         application_addr = Addressing.application_address(
-            txn_data.applicant,
             txn_data.record_identifier)
 
         state_items = self._get(state, [application_addr])
@@ -321,7 +319,6 @@ class SupplyChainHandler(object):
 
         record_addr = Addressing.record_address(txn_data.record_identifier)
         application_addr = Addressing.application_address(
-            txn_data.applicant,
             txn_data.record_identifier)
 
         state_items = self._get(state, [application_addr, record_addr])
