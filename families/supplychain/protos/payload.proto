@@ -53,17 +53,20 @@ message ApplicationCreatePayload {
 message ApplicationAcceptPayload {
     string record_identifier = 1;
     string applicant = 2;
-    int64 timestamp = 3;
+    Application.Type type = 3;
+    int64 timestamp = 4;
 }
 
 message ApplicationRejectPayload {
     string record_identifier = 1;
     string applicant = 2;
+    Application.Type type = 3;
 }
 
 message ApplicationCancelPayload {
     string record_identifier = 1;
     string applicant = 2;
+    Application.Type type = 3;
 }
 
 message RecordCreatePayload {

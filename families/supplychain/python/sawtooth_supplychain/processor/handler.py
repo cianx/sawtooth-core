@@ -215,7 +215,8 @@ class SupplyChainHandler(object):
         applications = state_items.get(application_addr,
                                        ApplicationContainer())
         application = self._find_application(
-            applications, originator, txn_data.record_identifier)
+            applications, originator, txn_data.record_identifier,
+            txn_data.type)
         if application is not None:
             raise InvalidTransaction("Application already exists.")
 
@@ -244,7 +245,8 @@ class SupplyChainHandler(object):
         # check that the application exists
         applications = state_items.get(application_addr, None)
         application = self._find_application(
-            applications, txn_data.applicant, txn_data.record_identifier)
+            applications, txn_data.applicant, txn_data.record_identifier,
+            txn_data.type)
         if application is None:
             raise InvalidTransaction("Application does not exists.")
 
@@ -299,7 +301,8 @@ class SupplyChainHandler(object):
         # check that the application exists
         applications = state_items.get(application_addr, None)
         application = self._find_application(
-            applications, txn_data.applicant, txn_data.record_identifier)
+            applications, txn_data.applicant, txn_data.record_identifier,
+            txn_data.type)
         if application is None:
             raise InvalidTransaction("Application does not exists.")
 
@@ -326,7 +329,8 @@ class SupplyChainHandler(object):
         # check that the application exists
         applications = state_items.get(application_addr, None)
         application = self._find_application(
-            applications, txn_data.applicant, txn_data.record_identifier)
+            applications, txn_data.applicant, txn_data.record_identifier,
+            txn_data.type)
         if application is None:
             raise InvalidTransaction("Application does not exists.")
 
@@ -365,11 +369,14 @@ class SupplyChainHandler(object):
         return None
 
     @staticmethod
-    def _find_application(applications, applicant, record_identifier):
+    def _find_application(applications, applicant,
+        record_identifier, application_type):
         if applications is not None:
             for application in applications.entries:
                 if application.record_identifier == record_identifier and\
-                        application.applicant == applicant:
+                        application.applicant == applicant and \
+                        application.type == application_type and \
+                        application.status == Application.OPEN:
                     return application
         return None
 

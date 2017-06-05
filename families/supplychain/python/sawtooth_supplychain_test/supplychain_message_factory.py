@@ -174,6 +174,7 @@ class SupplychainMessageFactory(object):
     def create_application_accept_tp_process_request(self,
                                                      record_id,
                                                      applicant_id,
+                                                     application_type,
                                                      timestamp=0):
         record_addr = Addressing.record_address(record_id)
         agent_pub_key = self.public_key
@@ -185,12 +186,14 @@ class SupplychainMessageFactory(object):
             SupplyChainPayload.APPLICATION_ACCEPT,
             ApplicationAcceptPayload(record_identifier=record_id,
                                      applicant=applicant_id,
+                                     type=application_type,
                                      timestamp=timestamp),
             inputs, outputs)
 
     def create_application_reject_tp_process_request(self,
                                                      record_id,
-                                                     applicant_id):
+                                                     applicant_id,
+                                                     application_type):
         record_addr = Addressing.record_address(record_id)
         agent_pub_key = self.public_key
         agent_addr = Addressing.agent_address(agent_pub_key)
@@ -201,12 +204,14 @@ class SupplychainMessageFactory(object):
         return self.create_tp_process_request(
             SupplyChainPayload.APPLICATION_REJECT,
             ApplicationRejectPayload(record_identifier=record_id,
-                                     applicant=applicant_id),
+                                     applicant=applicant_id,
+                                     type=application_type),
             inputs, outputs)
 
     def create_application_cancel_tp_process_request(self,
                                                      record_id,
-                                                     applicant_id):
+                                                     applicant_id,
+                                                     application_type):
         record_addr = Addressing.record_address(record_id)
         agent_pub_key = self.public_key
         agent_addr = Addressing.agent_address(agent_pub_key)
@@ -217,7 +222,8 @@ class SupplychainMessageFactory(object):
         return self.create_tp_process_request(
             SupplyChainPayload.APPLICATION_CANCEL,
             ApplicationCancelPayload(record_identifier=record_id,
-                                     applicant=applicant_id),
+                                     applicant=applicant_id,
+                                     type=application_type),
             inputs, outputs)
 
     def create_agent(self, identifier, name=None):

@@ -187,6 +187,7 @@ class TestSupplyChain(TransactionProcessorTestCase):
                 factory.create_application_accept_tp_process_request(
                     record_id,
                     applicant_id,
+                    Application.OWNER,
                     timestamp))
 
             # test for application and record existance
@@ -235,7 +236,8 @@ class TestSupplyChain(TransactionProcessorTestCase):
             validator.send(
                 factory.create_application_reject_tp_process_request(
                     record_id,
-                    applicant_id))
+                    applicant_id,
+                    Application.OWNER))
 
             # test for application and record existance
             received = self.expect_get([application_addr, record_addr])
@@ -276,7 +278,8 @@ class TestSupplyChain(TransactionProcessorTestCase):
             validator.send(
                 factory.create_application_cancel_tp_process_request(
                     record_id,
-                    agent_pub_key))
+                    agent_pub_key,
+                    Application.OWNER))
 
             # test for application existance
             received = self.expect_get([application_addr])
