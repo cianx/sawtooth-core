@@ -61,9 +61,9 @@ Example JSON Response
 
    {
      "error": {
-       "code": 30,
-       "title": "Submitted Batches Invalid",
-       "message": "The submitted BatchList is invalid. It was poorly formed, or has an invalid signature."
+       "code": 1072,
+       "title": "Record Not Found",
+       "message": "There is no record with the id specified in global state."
      }
    }
 
@@ -105,40 +105,6 @@ Error Codes and Descriptions
      - The validator sent back a resource with a header that could not be
        decoded. There may be a problem with the validator, or the data may
        have been corrupted.
-   * - 27
-     - Unable to Fetch Statuses
-     - The validator should always return some status for every batch
-       requested. An unknown error caused statuses to be missing, and should be
-       reported.
-   * - 30
-     - Submitted Batches Invalid
-     - The submitted BatchList failed initial validation by the validator. It
-       may have a bad signature, or be poorly formed.
-   * - 34
-     - No Batches Submitted
-     - The BatchList Protobuf submitted was empty and contained no Batches. All
-       submissions to the validator must include at least one Batch.
-   * - 35
-     - Protobuf Not Decodable
-     - The REST API was unable to decode the submitted Protobuf binary. It is
-       poorly formed, and has not been submitted to the validator.
-   * - 42
-     - Wrong Content Type (submit batches)
-     - POST requests to submit a BatchList must have a 'Content-Type' header of
-       'application/octet-stream'.
-   * - 43
-     - Wrong Content Type (fetch statuses)
-     - If using a POST request to fetch batch statuses, the 'Content-Type'
-       header must be 'application/json'.
-   * - 46
-     - Bad Status Request
-     - The body of the POST request to fetch batch statuses was poorly formed.
-       It must be a JSON formatted array of string-formatted batch ids, with at
-       least one id.
-   * - 50
-     - Head Not Found
-     - A 'head' query parameter was used, but the block id specified does not
-       correspond to any block in the validator.
    * - 53
      - Invalid Count Query
      - The 'count' query parameter must be a positive, non-zero integer.
@@ -146,28 +112,12 @@ Error Codes and Descriptions
      - Invalid Paging Query
      - The validator rejected the paging request submitted. One or more of the
        'min', 'max', or 'count' query parameters were invalid or out of range.
-   * - 57
-     - Invalid Sort Query
-     - The validator rejected the sort request submitted. Most likely one of
-       the keys specified was not found in the resources sorted.
-   * - 62
-     - Invalid State Address
-     - The state address submitted was invalid. Returned when attempting to
-       fetch a particular "leaf" from the state tree. When fetching specific
-       state data, the full 70-character address must be used.
    * - 66
      - Id Query Invalid or Missing
      - If using a GET request to fetch batch statuses, an 'id' query parameter
-       must be specified, with a comma-separated list of at least one batch id.
-   * - 70
-     - Block Not Found
-     - There is no block with the id specified in the blockchain.
-   * - 71
-     - Batch Not Found
-     - There is no batch with the id specified in the blockchain.
-   * - 72
-     - Transaction Not Found
-     - There is no transaction with the id specified in the blockchain.
-   * - 75
-     - State Not Found
-     - There is no state data at the address specified.
+   * - 1071
+     - Agent Not Found
+     - There is no agent with the id specified in global state.
+   * - 1072
+     - Record Not Found
+     - There is no record with the id specified in global state.
