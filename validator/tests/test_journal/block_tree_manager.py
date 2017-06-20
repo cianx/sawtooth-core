@@ -131,6 +131,7 @@ class BlockTreeManager(object):
     def generate_block(self, previous_block=None,
                        add_to_store=False,
                        add_to_cache=False,
+                       batches=None,
                        batch_count=0,
                        batches=None,
                        status=BlockStatus.Unknown,
@@ -166,6 +167,13 @@ class BlockTreeManager(object):
         block_builder.set_signature(signature)
 
         block_wrapper = BlockWrapper(block_builder.build_block())
+
+        if batches:
+            block_wrapper.block.batches.extend(batches)
+
+        if batch_count:
+            block_wrapper.block.batches.extend(
+                [self.generate_batch() for _ in range(batch_count)])
 
         if invalid_signature:
             block_wrapper.block.header_signature = "BAD"
