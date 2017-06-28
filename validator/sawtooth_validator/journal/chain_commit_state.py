@@ -19,7 +19,7 @@ class _CommitCache(object):
     identifiers are either explicitly committed, explicity uncommitted, if
     they fall in to neither of these cases then the fallback is to look in
     the BlockStore to see if they are there. Explicit committed ids
-    take priority over uncommitted since one of the common use cases we have
+    take priority over uncommitted since obtaine of the common use cases we have
     is to simulate the committed state at a previous state of the BlockStore
     and we allow for the identifiers to be re-committed.
     """
@@ -45,6 +45,11 @@ class _CommitCache(object):
         elif identifier in self._uncommitted:
             return False
         return self.block_store_check(identifier)
+
+    def __str__(self):
+        return "\t\tCommited {}\n\t\tUncommitted{}".format(
+            [x[:8] for x in self._committed],
+            [x[:8] for x in self._uncommitted])
 
 
 class ChainCommitState(object):
@@ -88,6 +93,11 @@ class ChainCommitState(object):
 
     def has_transaction(self, txn_id):
         return txn_id in self._transaction_commit_state
+
+    def __str__(self):
+        return "batches\n{}\ntransactions\n{}\n".format(
+            self._batch_commit_state,
+            self._transaction_commit_state)
 
 
 class TransactionCommitState(_CommitCache):

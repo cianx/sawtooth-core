@@ -16,6 +16,7 @@
 import abc
 # pylint: disable=no-name-in-module
 from collections.abc import MutableMapping
+import logging
 
 from sawtooth_validator.exceptions import PossibleForkDetectedError
 from sawtooth_validator.exceptions import ChainHeadUpdatedError
@@ -26,6 +27,9 @@ from sawtooth_validator.protobuf.batch_pb2 import BatchHeader
 from sawtooth_validator.protobuf.block_pb2 import Block
 
 CHAIN_HEAD_KEY = "chain_head_id"
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 CHAIN_HEAD_KEY = "chain_head_id"
@@ -183,6 +187,7 @@ class BlockStore(MutableMapping):
         else:
             value = self._block_store.get(key)
 
+        LOGGER.info("_get %s %s", key, value is not None)
         if value is None:
             raise KeyError('Item "{}" not found in store'.format(key))
         return value

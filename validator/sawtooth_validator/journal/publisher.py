@@ -141,7 +141,7 @@ class _CandidateBlock(object):
         is already in the pending queue.
         :param batch: the batch to check
         """
-        return batch.header_signature in self._pending_batch_ids # FIXME  committed txn cache...
+        return batch.header_signature in self._pending_batch_ids
 
     def _is_txn_already_committed(self, txn, committed_txn_cache):
         """ Test if a transaction is already committed to the chain or
@@ -522,6 +522,10 @@ class BlockPublisher(object):
                     if block:
                         blkw = BlockWrapper(block)
                         LOGGER.info("Claimed Block: %s", blkw)
+                        for batch in blkw.batches:
+                            LOGGER.debug("Batch %s",
+                                batch.header_signature[:8])
+
                         self._block_sender.send(blkw.block)
 
                         # We built our candidate, disable processing until

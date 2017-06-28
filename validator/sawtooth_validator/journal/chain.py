@@ -178,6 +178,7 @@ class BlockValidator(object):
             self._executor.execute(scheduler)
             try:
                 for batch, has_more in look_ahead(blkw.block.batches):
+                    LOGGER.debug("_chain_commit_state: %s", self._chain_commit_state)
                     if self._chain_commit_state.has_batch(
                             batch.header_signature):
                         LOGGER.debug("Block(%s) rejected due duplicate "
@@ -193,6 +194,9 @@ class BlockValidator(object):
                     else:
                         scheduler.add_batch(batch, blkw.state_root_hash)
             except InvalidBatch:
+                LOGGER.debug("Block(%s) rejected due invalid batch"
+                             ": %s", blkw,
+                             batch.header_signature[:8])
                 scheduler.cancel()
                 return False
             except:
@@ -209,16 +213,21 @@ class BlockValidator(object):
                 if result is not None and result.is_valid:
                     state_hash = result.state_hash
                 else:
+                    LOGGER.debug("Transaction Failed")
                     return False
             if blkw.state_root_hash != state_hash:
+                LOGGER.debug("State Hash Mismatch: %s %s", blkw.state_root_hash, state_hash)
                 return False
         return True
 
     def validate_block(self, blkw):
         try:
+            LOGGER.debug("validate_block")
             if blkw.status == BlockStatus.Valid:
+                LOGGER.debug("Block Valid")
                 return True
             elif blkw.status == BlockStatus.Invalid:
+                LOGGER.debug("Block Invalid")
                 return False
             else:
                 valid = True
@@ -235,7 +244,10 @@ class BlockValidator(object):
 
                 if valid:
                     valid = consensus.verify_block(blkw)
+                    if not valid:
+                        LOGGER.debug("Failed consensus.verify_block")
 
+                LOGGER.debug("valid: %s %s", blkw, valid)
                 blkw.status = BlockStatus.Valid if \
                     valid else BlockStatus.Invalid
                 return valid
@@ -374,6 +386,7 @@ class BlockValidator(object):
 
             valid = True
             for block in reversed(new_chain):
+                LOGGER.info("validate_block: %s", block)
                 if valid:
                     if not self.validate_block(block):
                         LOGGER.info("Block validation failed: %s", block)
@@ -405,9 +418,11 @@ class BlockValidator(object):
         except ChainHeadUpdatedError:
             # callback to get the block validation scheduled with the new
             # chain head.
+            LOGGER.error("CIAN CIAN CIAN: %s", self._new_block)
             self._done_cb(False, self._result)
         except BlockValidationAborted:
             # callback to clean up the block out of the processing list.
+            LOGGER.error("BlockValidationAborted %s", self._new_block)
             self._done_cb(False, self._result)
         except Exception as exc:  # pylint: disable=broad-except
             LOGGER.error("Block validation failed with unexpected error: %s",

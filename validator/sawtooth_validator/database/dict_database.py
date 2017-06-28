@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
+import logging
 
 from sawtooth_validator.database import database
 
+LOGGER = logging.getLogger(__name__)
 
 class DictDatabase(database.Database):
     """This database implementation should only be used in
