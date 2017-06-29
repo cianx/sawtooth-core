@@ -53,10 +53,11 @@ class ChainCommitState(object):
     transactions, and missing transactions dependencies when evaluating a new
     chain.
     """
-    def __init__(self, block_store, uncommitted_blocks):
-        self._batch_commit_state = _CommitCache(block_store.has_batch)
+    def __init__(self, block_store, uncommitted_blocks, chain_head_id):
+        self._batch_commit_state = _CommitCache(
+            lambda bid: block_store.has_batch(bid, chain_head_id))
         self._transaction_commit_state = _CommitCache(
-            block_store.has_transaction)
+            lambda tid: block_store.has_transaction(tid, chain_head_id))
 
         for block in uncommitted_blocks:
             self._uncommit_block(block)
@@ -94,9 +95,9 @@ class TransactionCommitState(_CommitCache):
     blockchain. This is used to to detect duplicate transactions or missing
     dependencies when building a block.
     """
-    def __init__(self, block_store):
+    def __init__(self, block_store, chain_head_id):
         super(TransactionCommitState, self).__init__(
-            block_store.has_transaction)
+            lambda txn: block_store.has_transaction(txn, chain_head_id))
 
     def add_batch(self, batch, add_transactions=True):
         for txn in batch.transactions:

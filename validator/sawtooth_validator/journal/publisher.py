@@ -77,6 +77,10 @@ class _CandidateBlock(object):
         return len(self._pending_batches) != 0
 
     @property
+    def chain_head(self):
+        return self._block_builder.previous_block_id
+
+    @property
     def last_batch(self):
         if self._pending_batches:
             return self._pending_batches[-1]
@@ -137,15 +141,13 @@ class _CandidateBlock(object):
         is already in the pending queue.
         :param batch: the batch to check
         """
-        return (self._block_store.has_batch(batch.header_signature) or
-                batch.header_signature in self._pending_batch_ids)
+        return batch.header_signature in self._pending_batch_ids # FIXME  committed txn cache...
 
     def _is_txn_already_committed(self, txn, committed_txn_cache):
         """ Test if a transaction is already committed to the chain or
         is already in the pending queue.
         """
-        return (self._block_store.has_batch(txn.header_signature) or
-                txn.header_signature in committed_txn_cache)
+        return txn.header_signature in committed_txn_cache
 
     def add_batch(self, batch):
         """Add a batch to the _CandidateBlock
@@ -208,7 +210,8 @@ class _CandidateBlock(object):
         # this is a transaction cache to track the transactions committed
         # up to this batch. Only valid transactions that were processed
         # by the scheduler are added.
-        committed_txn_cache = TransactionCommitState(self._block_store)
+        committed_txn_cache = TransactionCommitState(
+            self._block_store, self._block_builder.previous_block_id)
 
         builder = self._block_builder
         bad_batches = []  # the list of batches that failed processing
@@ -367,6 +370,7 @@ class BlockPublisher(object):
             'sawtooth.publisher.max_batches_per_block',
             default_value=0, value_type=int)
 
+        #FIXME poet must check the
         consensus = consensus_module.\
             BlockPublisher(block_cache=self._block_cache,
                            state_view_factory=self._state_view_factory,
@@ -390,7 +394,7 @@ class BlockPublisher(object):
 
         # build the TransactionCommitState
         committed_txn_cache = TransactionCommitState(
-            self._block_cache.block_store)
+            self._block_cache.block_store, self._chain_head.identifier)
 
         self._transaction_executor.execute(scheduler)
         self._candidate_block = _CandidateBlock(self._block_cache.block_store,

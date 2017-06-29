@@ -304,7 +304,7 @@ class Completer(object):
                 block_store = self.block_cache.block_store
                 try:
                     return block_store.get_batch(batch_id)
-                except ValueError:
+                except KeyError:
                     return None
 
     def get_batch_by_transaction(self, transaction_id):
@@ -317,7 +317,7 @@ class Completer(object):
                 block_store = self.block_cache.block_store
                 try:
                     return block_store.get_batch_by_transaction(transaction_id)
-                except ValueError:
+                except KeyError:
                     return None
 
 

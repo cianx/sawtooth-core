@@ -31,6 +31,12 @@ class DictDatabase(database.Database):
     def get(self, key):
         return self._data.get(key)
 
+    def get_batch(self, keys):
+        out = []
+        for k in keys:
+            out.append((k, self._data.get(k)))
+        return out
+
     def __contains__(self, item):
         return item in self._data
 

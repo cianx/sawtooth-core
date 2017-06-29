@@ -26,6 +26,7 @@ from sawtooth_validator.protobuf.setting_pb2 import Setting
 
 from sawtooth_validator.state.settings_view import SettingsView
 
+
 class SynchronousExecutor(Executor):
     def __init__(self):
         self._work_queue = []

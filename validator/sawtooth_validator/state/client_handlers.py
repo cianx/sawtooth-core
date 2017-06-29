@@ -791,7 +791,7 @@ class BatchGetRequest(_ClientRequestHandler):
     def _respond(self, request):
         try:
             batch = self._block_store.get_batch(request.batch_id)
-        except ValueError as e:
+        except KeyError as e:
             LOGGER.debug(e)
             return self._status.NO_RESOURCE
         return self._wrap_response(batch=batch)
@@ -848,7 +848,7 @@ class TransactionGetRequest(_ClientRequestHandler):
     def _respond(self, request):
         try:
             txn = self._block_store.get_transaction(request.transaction_id)
-        except ValueError as e:
+        except KeyError as e:
             LOGGER.debug(e)
             return self._status.NO_RESOURCE
         return self._wrap_response(transaction=txn)
