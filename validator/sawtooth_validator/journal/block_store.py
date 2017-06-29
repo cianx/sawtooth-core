@@ -233,6 +233,7 @@ class BlockStore(MutableMapping):
     def has_batch(self, batch_id, assert_chain_head_id=None):
         return self._has(batch_id, assert_chain_head_id)
 
+    #FIXME NAME
     def get_batch_by_transaction(self, transaction_id,
                                  assert_chain_head_id=None):
         """

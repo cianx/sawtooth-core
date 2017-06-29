@@ -55,6 +55,7 @@ from test_journal import mock_consensus
 
 LOGGER = logging.getLogger(__name__)
 
+
 class TestBlockCache(unittest.TestCase):
     def test_load_from_block_store(self):
         """ Test that misses will load from the block store.
