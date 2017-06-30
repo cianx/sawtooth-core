@@ -13,6 +13,7 @@
 # limitations under the License.
 # ------------------------------------------------------------------------------
 
+import logging
 import hashlib
 import logging
 import pprint
@@ -44,7 +45,6 @@ from test_journal.mock import MockBatchSender
 from test_journal.mock import MockBlockSender
 from test_journal.mock import MockStateViewFactory
 from test_journal.mock import MockTransactionExecutor
-
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -132,6 +132,7 @@ class BlockTreeManager(object):
                        add_to_store=False,
                        add_to_cache=False,
                        batch_count=0,
+                       batches=None,
                        status=BlockStatus.Unknown,
                        invalid_consensus=False,
                        invalid_batch=False,
@@ -142,27 +143,35 @@ class BlockTreeManager(object):
         if previous is None:
             previous = self.chain_head
 
-        self.block_publisher.on_chain_updated(previous)
+        header = BlockHeader(
+            previous_block_id=previous.identifier,
+            signer_pubkey=self.public_key,
+            block_num=previous.block_num+1)
 
-        while self.block_sender.new_block is None:
-            self.block_publisher.on_batch_received(
-                self._generate_batch_from_payload(''))
-            self.block_publisher.on_check_publish_block(True)
+        block_builder = BlockBuilder(header)
+        if batches:
+            block_builder.add_batches.extend(batches)
 
-        block_from_sender = self.block_sender.new_block
-        self.block_sender.new_block = None
+        if batch_count != 0:
+            block_builder.add_batches(
+                [self.generate_batch()
+                    for _ in range(batch_count)])
 
-        block_wrapper = BlockWrapper(block_from_sender)
+        if invalid_batch:
+            block_builder.add_batches(
+                [self._generate_batch_from_payload('BAD')])
+
+        header_bytes = block_builder.block_header.SerializeToString()
+        signature = signing.sign(header_bytes, self.identity_signing_key)
+        block_builder.set_signature(signature)
+
+        block_wrapper = BlockWrapper(block_builder.build_block())
 
         if invalid_signature:
             block_wrapper.block.header_signature = "BAD"
 
         if invalid_consensus:
             block_wrapper.header.consensus = b'BAD'
-
-        if invalid_batch:
-            block_wrapper.block.batches.extend(
-                [self._generate_batch_from_payload('BAD')])
 
         block_wrapper.weight = weight
         block_wrapper.status = status
