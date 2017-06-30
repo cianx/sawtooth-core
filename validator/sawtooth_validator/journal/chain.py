@@ -230,19 +230,18 @@ class BlockValidator(object):
                 LOGGER.debug("Block Invalid")
                 return False
             else:
-                valid = True
-
-                consensus = self._consensus_module.\
-                    BlockVerifier(block_cache=self._block_cache,
-                                  state_view_factory=self._state_view_factory,
-                                  data_dir=self._data_dir,
-                                  config_dir=self._config_dir,
-                                  validator_id=self._identity_public_key)
+                valid = self._verify_block_batches(blkw)
+                if not valid:
+                    LOGGER.debug("Failed _verify_block_batches")
 
                 if valid:
-                    valid = self._verify_block_batches(blkw)
-
-                if valid:
+                    consensus = self._consensus_module.\
+                        BlockVerifier(block_cache=self._block_cache,
+                                      state_view_factory=
+                                      self._state_view_factory,
+                                      data_dir=self._data_dir,
+                                      config_dir=self._config_dir,
+                                      validator_id=self._identity_public_key)
                     valid = consensus.verify_block(blkw)
                     if not valid:
                         LOGGER.debug("Failed consensus.verify_block")
