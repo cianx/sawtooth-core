@@ -98,6 +98,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.cpus = conf['VAGRANT_CPUS']
   end
 
+  config.vm.provider "hyperv" do |v|
+    v.memory = conf['VAGRANT_MEMORY']
+    v.cpus = conf['VAGRANT_CPUS']
+    v.vm_integration_services = {
+        key_value_pair_exchange: true
+    }
+  end
+  conf['VAGRANT_BOX'] = "dissnn/ubuntu-16.04" # 'generic/ubuntu1604'
   config.vm.box = conf['VAGRANT_BOX']
 
   if conf['VAGRANT_FORWARD_PORTS']
