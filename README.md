@@ -1,6 +1,8 @@
 
 ![Hyperledger Sawtooth](images/sawtooth_logo_light_blue-small.png)  
 
+TEST
+
 
 Hyperledger Sawtooth is an enterprise solution for building, deploying, and
 running distributed ledgers (also called blockchains). 
