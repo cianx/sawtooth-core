@@ -182,6 +182,70 @@ class RouteHandler(object):
         timer_ctx.stop()
         return retval
 
+    async def call_batches(self, request):
+        """Accepts a binary encoded BatchList and submits it to the validator
+        as a "call" to the trasaction processor.
+
+        Request:
+            body: octet-stream BatchList of one or more Batches
+        Response:
+            status:
+                 - 202: Batches submitted and pending
+            link: /batches or /batch_statuses link for submitted batches
+
+        """
+        timer_ctx = self._post_batches_total_time.time()
+        self._post_batches_count.inc()
+
+        # Parse request
+        if request.headers['Content-Type'] != 'application/octet-stream':
+            LOGGER.debug(
+                'Submission headers had wrong Content-Type: %s',
+                request.headers['Content-Type'])
+            self._post_batches_error.inc()
+            raise errors.SubmissionWrongContentType()
+
+        body = await request.read()
+        if not body:
+            LOGGER.debug('Submission contained an empty body')
+            self._post_batches_error.inc()
+            raise errors.NoBatchesSubmitted()
+
+        try:
+            batch_list = BatchList()
+            batch_list.ParseFromString(body)
+        except DecodeError:
+            LOGGER.debug('Submission body could not be decoded: %s', body)
+            self._post_batches_error.inc()
+            raise errors.BadProtobufSubmitted()
+
+        # Query validator
+        error_traps = [error_handlers.BatchInvalidTrap,
+                       error_handlers.BatchQueueFullTrap]
+        validator_query = client_batch_submit_pb2.ClientBatchSubmitRequest(
+            batches=batch_list.batches)
+
+        with self._post_batches_validator_time.time():
+            await self._query_validator(
+                Message.CLIENT_BATCH_CALL_REQUEST,
+                client_batch_submit_pb2.ClientBatchSubmitResponse,
+                validator_query,
+                error_traps)
+
+        # Build response envelope
+        id_string = ','.join(b.header_signature for b in batch_list.batches)
+
+        status = 202
+        link = self._build_url(request, path='/batch_statuses', id=id_string)
+
+        retval = self._wrap_response(
+            request,
+            metadata={'link': link},
+            status=status)
+
+        timer_ctx.stop()
+        return retval
+
     async def list_statuses(self, request):
         """Fetches the committed status of batches by either a POST or GET.
 

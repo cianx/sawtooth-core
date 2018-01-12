@@ -111,6 +111,11 @@ message Message {
         CLIENT_PEERS_GET_RESPONSE = 126;
         CLIENT_BLOCK_GET_BY_TRANSACTION_ID_REQUEST = 127;
         CLIENT_BLOCK_GET_BY_BATCH_ID_REQUEST = 128;
+        // Submission of a batchlist to be executed by the TP for the purpose
+        // of retreiving the receipts with out modifing State
+        CLIENT_BATCH_CALL_REQUEST = 129;
+        // A response with the batch reciepts
+        CLIENT_BATCH_CALL_RESPONSE = 130;
 
         // Message types for events
         CLIENT_EVENTS_SUBSCRIBE_REQUEST = 500;

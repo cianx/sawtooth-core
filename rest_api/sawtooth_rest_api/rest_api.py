@@ -104,6 +104,8 @@ def start_rest_api(host, port, connection, timeout, registry):
     app.router.add_get('/batch_statuses', handler.list_statuses)
     app.router.add_post('/batch_statuses', handler.list_statuses)
 
+    app.router.add_post('/call', handler.call_batches)
+
     app.router.add_get('/state', handler.list_state)
     app.router.add_get('/state/{address}', handler.fetch_state)
 
@@ -117,6 +119,7 @@ def start_rest_api(host, port, connection, timeout, registry):
     app.router.add_get(
         '/transactions/{transaction_id}',
         handler.fetch_transaction)
+
 
     app.router.add_get('/receipts', handler.list_receipts)
     app.router.add_post('/receipts', handler.list_receipts)
